@@ -178,7 +178,7 @@ Flotr.addPlugin('hit', {
 
         if
           (options.mouse.trackAll ||
-          (closest.distanceX < sensibility / xaxis.scale &&
+          (closest.distanceX < sensibility / Math.abs(xaxis.scale) &&
           (!options.mouse.trackY || closest.distanceY < sensibility / yaxis.scale)))
         {
           n.series      = series;
@@ -253,7 +253,11 @@ Flotr.addPlugin('hit', {
         if (x === null || y === null) continue;
 
         // don't check if the point isn't visible in the current range
-        if (x < serie.xaxis.min || x > serie.xaxis.max) continue;
+        if(serie.xaxis.min > serie.xaxis.max) {
+          if (x > serie.xaxis.min || x < serie.xaxis.max) continue;
+        } else {
+          if (x < serie.xaxis.min || x > serie.xaxis.max) continue;
+        }
 
         distanceX = Math.abs(x - mouseX);
         distanceY = Math.abs(y - mouseY);
