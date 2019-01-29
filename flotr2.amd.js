@@ -4087,7 +4087,25 @@ Flotr.addPlugin('download', {
       D.insert(this.el, image);
       this.saveImageElement = image;
     } else {
-      return window.open(image.src);
+      var u = navigator.userAgent, isIE = (Flotr.isIE || (new RegExp(/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i)).test(u) || (new RegExp(/(edge)\/((\d+)?[\w\.]+)/i)).test(u));
+
+        if (isIE) {
+            return window.open('about:blank').document.body.innerHTML = '<img src="' + image.src+ '">';
+        }
+
+        var win = window.open('about:blank');
+        setTimeout(function() {
+          var script =
+          'document.body.innerHTML = \'If download is not started please click ' +
+          '<a href="' + image.src+ '"download="pem_chart.' + type + '">' +
+          'here</a> to download.\';' +
+          'setTimeout(function() {' +
+          '  document.getElementsByTagName(\'a\')[0].click();' +
+          '}, 100);';
+
+          win.eval(script);
+        }, 200);
+        return;
     }
   },
 
