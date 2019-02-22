@@ -17,9 +17,9 @@ Text.prototype = {
   dimensions : function (text, canvasStyle, htmlStyle, className) {
 
     if (!text) return { width : 0, height : 0 };
-    
+
     return (this.o.html) ?
-      this.html(text, this.o.element, htmlStyle, className) : 
+      this.html(text, this.o.element, htmlStyle, className) :
       this.canvas(text, canvasStyle);
   },
 
@@ -71,11 +71,12 @@ Text.prototype = {
     style = _.extend({
       size: F.defaultOptions.fontSize,
       weight: 1,
-      angle: 0
+      angle: 0,
+      font: 'Roboto, "Helvetica Neue", -apple-system',
     }, style);
 
     context.save();
-    context.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px sans-serif";
+    context.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px " + style.font;
     metrics = context.measureText(text);
     context.restore();
 

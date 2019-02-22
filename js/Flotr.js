@@ -17,20 +17,20 @@ Flotr = {
   bean: bean,
   isIphone: /iphone/i.test(navigator.userAgent),
   isIE: (navigator.appVersion.indexOf("MSIE") != -1 ? parseFloat(navigator.appVersion.split("MSIE")[1]) : false),
-  
+
   /**
    * An object of the registered graph types. Use Flotr.addType(type, object)
    * to add your own type.
    */
   graphTypes: {},
-  
+
   /**
    * The list of the registered plugins
    */
   plugins: {},
-  
+
   /**
-   * Can be used to add your own chart type. 
+   * Can be used to add your own chart type.
    * @param {String} name - Type of chart, like 'pies', 'bars' etc.
    * @param {String} graphType - The object containing the basic drawing functions (draw, etc)
    */
@@ -39,7 +39,7 @@ Flotr = {
     Flotr.defaultOptions[name] = graphType.options || {};
     Flotr.defaultOptions.defaultType = Flotr.defaultOptions.defaultType || name;
   },
-  
+
   /**
    * Can be used to add a plugin
    * @param {String} name - The name of the plugin
@@ -49,7 +49,7 @@ Flotr = {
     Flotr.plugins[name] = plugin;
     Flotr.defaultOptions[name] = plugin.options || {};
   },
-  
+
   /**
    * Draws the graph. This function is here for backwards compatibility with Flotr version 0.1.0alpha.
    * You could also draw graphs by directly calling Flotr.Graph(element, data, options).
@@ -59,11 +59,11 @@ Flotr = {
    * @param {Class} _GraphKlass_ - (optional) Class to pass the arguments to, defaults to Flotr.Graph
    * @return {Object} returns a new graph object and of course draws the graph.
    */
-  draw: function(el, data, options, GraphKlass){  
+  draw: function(el, data, options, GraphKlass){
     GraphKlass = GraphKlass || Flotr.Graph;
     return new GraphKlass(el, data, options);
   },
-  
+
   /**
    * Recursively merges two objects.
    * @param {Object} src - source object (likely the object with the least properties)
@@ -95,7 +95,7 @@ Flotr = {
 
     return result;
   },
-  
+
   /**
    * Recursively clones an object.
    * @param {Object} object - The object to clone
@@ -105,7 +105,7 @@ Flotr = {
   clone: function(object){
     return Flotr.merge(object, {});
   },
-  
+
   /**
    * Function calculates the ticksize and returns it.
    * @param {Integer} noTicks - number of ticks
@@ -119,15 +119,15 @@ Flotr = {
         magn = Flotr.getMagnitude(delta),
         tickSize = 10,
         norm = delta / magn; // Norm is between 1.0 and 10.0.
-        
+
     if(norm < 1.5) tickSize = 1;
     else if(norm < 2.25) tickSize = 2;
     else if(norm < 3) tickSize = ((decimals === 0) ? 2 : 2.5);
     else if(norm < 7.5) tickSize = 5;
-    
+
     return tickSize * magn;
   },
-  
+
   /**
    * Default tick formatter.
    * @param {String, Integer} val - tick value integer
@@ -137,7 +137,7 @@ Flotr = {
   defaultTickFormatter: function(val, axisOpts){
     return val+'';
   },
-  
+
   /**
    * Formats the mouse tracker values.
    * @param {Object} obj - Track value Object {x:..,y:..}
@@ -145,8 +145,8 @@ Flotr = {
    */
   defaultTrackFormatter: function(obj){
     return '('+obj.x+', '+obj.y+')';
-  }, 
-  
+  },
+
   /**
    * Utility function to convert file size values in bytes to kB, MB, ...
    * @param value {Number} - The value to convert
@@ -174,7 +174,7 @@ Flotr = {
 
     return (Math.round(value * precision) / precision) + sizes[total];
   },
-  
+
   /**
    * Returns the magnitude of the input value.
    * @param {Integer, Float} x - integer or float value
@@ -197,21 +197,22 @@ Flotr = {
       ctx.drawText(text, x, y, style);
       return;
     }
-    
+
     style = this._.extend({
       size: Flotr.defaultOptions.fontSize,
       color: '#000000',
       textAlign: 'left',
       textBaseline: 'bottom',
       weight: 1,
-      angle: 0
+      angle: 0,
+      font: 'Roboto, "Helvetica Neue", -apple-system',
     }, style);
-    
+
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(style.angle);
     ctx.fillStyle = style.color;
-    ctx.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px sans-serif";
+    ctx.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px " + style.font;
     ctx.textAlign = style.textAlign;
     ctx.textBaseline = style.textBaseline;
     ctx.fillText(text, 0, 0);
@@ -220,13 +221,13 @@ Flotr = {
   getBestTextAlign: function(angle, style) {
     style = style || {textAlign: 'center', textBaseline: 'middle'};
     angle += Flotr.getTextAngleFromAlign(style);
-    
-    if (Math.abs(Math.cos(angle)) > 10e-3) 
+
+    if (Math.abs(Math.cos(angle)) > 10e-3)
       style.textAlign    = (Math.cos(angle) > 0 ? 'right' : 'left');
-    
-    if (Math.abs(Math.sin(angle)) > 10e-3) 
+
+    if (Math.abs(Math.sin(angle)) > 10e-3)
       style.textBaseline = (Math.sin(angle) > 0 ? 'top' : 'bottom');
-    
+
     return style;
   },
   alignTable: {
