@@ -1314,8 +1314,13 @@ Graph.prototype = {
       ry = pointer.y - r.top - plotOffset.top;
     } else {
       r = this.overlay.getBoundingClientRect();
-      rx = e.clientX - r.left - plotOffset.left - b.scrollLeft - de.scrollLeft;
-      ry = e.clientY - r.top - plotOffset.top - b.scrollTop - de.scrollTop;
+      if (window.pageXOffset !== undefined) {
+        rx = e.clientX - r.left - plotOffset.left - window.pageXOffset;
+        ry = e.clientY - r.top - plotOffset.top - window.pageYOffset;
+      } else {
+        rx = e.clientX - r.left - plotOffset.left - b.scrollLeft - de.scrollLeft;
+        ry = e.clientY - r.top - plotOffset.top - b.scrollTop - de.scrollTop;
+      }
     }
 
     return {
