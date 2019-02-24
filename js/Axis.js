@@ -63,7 +63,7 @@ Axis.prototype = {
 
     this.ticks = [];
     this.minorTicks = [];
-    
+
     // User Ticks
     if(options.ticks){
       this._cleanUserTicks(options.ticks, this.ticks);
@@ -96,7 +96,7 @@ Axis.prototype = {
       min     = o.min !== null ? o.min : axis.datamin,
       max     = o.max !== null ? o.max : axis.datamax,
       margin  = o.autoscaleMargin;
-        
+
     if (o.scaling == 'logarithmic') {
       if (min <= 0) min = axis.datamin;
 
@@ -120,9 +120,9 @@ Axis.prototype = {
       var minexp = Math.log(min);
       if (o.base != Math.E) minexp /= Math.log(o.base);
       minexp = Math.ceil(minexp);
-      
+
       axis.tickSize = Flotr.getTickSize(o.noTicks, minexp, maxexp, o.tickDecimals === null ? 0 : o.tickDecimals);
-                        
+
       // Try to determine a suitable amount of miniticks based on the length of a decade
       if (o.minorTickFreq === null) {
         if (maxexp - minexp > 10)
@@ -146,10 +146,10 @@ Axis.prototype = {
       if(axis.min < 0 && axis.datamin >= 0) axis.min = 0;
       axis.min = axis.tickSize * Math.floor(axis.min / axis.tickSize);
     }
-    
+
     if(o.max === null && o.autoscale){
       axis.max += axis.tickSize * margin;
-      if(axis.max > 0 && axis.datamax <= 0 && axis.datamax != axis.datamin) axis.max = 0;        
+      if(axis.max > 0 && axis.datamax <= 0 && axis.datamax != axis.datamin) axis.max = 0;
       axis.max = axis.tickSize * Math.ceil(axis.max / axis.tickSize);
     }
 
@@ -179,7 +179,7 @@ Axis.prototype = {
     );
 
     this.titleSize = T.dimensions(
-      this.options.title, 
+      this.options.title,
       {size:options.fontSize*1.2, angle: Flotr.toRad(this.options.titleAngle)},
       'font-weight:bold;',
       'flotr-axis-title'
@@ -224,18 +224,18 @@ Axis.prototype = {
     var min = Math.log(axis.min);
     if (o.base != Math.E) min /= Math.log(o.base);
     min = Math.ceil(min);
-    
+
     for (i = min; i < max; i += axis.tickSize) {
       decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
       // Next decade begins here:
       var decadeEnd = decadeStart * ((o.base == Math.E) ? Math.exp(axis.tickSize) : Math.pow(o.base, axis.tickSize));
       var stepSize = (decadeEnd - decadeStart) / o.minorTickFreq;
-      
+
       axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
       for (v = decadeStart + stepSize; v < decadeEnd; v += stepSize)
         axis.minorTicks.push({v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max})});
     }
-    
+
     // Always show the value at the would-be start of next decade (end of this decade)
     decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
     axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
@@ -253,18 +253,18 @@ Axis.prototype = {
         minorTickSize,
         v, v2,
         i, j;
-    
+
     if (o.minorTickFreq)
       minorTickSize = tickSize / o.minorTickFreq;
-                      
+
     // Then store all possible ticks.
     for (i = 0; (v = v2 = start + i * tickSize) <= max; ++i){
-      
+
       // Round (this is always needed to fix numerical instability).
       decimals = o.tickDecimals;
       if (decimals === null) decimals = 1 - Math.floor(Math.log(tickSize) / Math.LN10);
       if (decimals < 0) decimals = 0;
-      
+
       v = v.toFixed(decimals);
       axis.ticks.push({ v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max}) });
 
@@ -298,7 +298,7 @@ _.extend(Axis, {
 
 function log (value, base) {
   value = Math.log(Math.max(value, Number.MIN_VALUE));
-  if (base !== Math.E) 
+  if (base !== Math.E)
     value /= Math.log(base);
   return value;
 }

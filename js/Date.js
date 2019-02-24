@@ -18,7 +18,7 @@ Flotr.Date = {
   format: function(d, format, mode) {
     if (!d) return;
 
-    // We should maybe use an "official" date format spec, like PHP date() or ColdFusion 
+    // We should maybe use an "official" date format spec, like PHP date() or ColdFusion
     // http://fr.php.net/manual/en/function.date.php
     // http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=functions_c-d_29.html
     var
@@ -39,13 +39,13 @@ Flotr.Date = {
       n += '';
       return n.length == 1 ? "0" + n : n;
     }
-    
+
     var r = [], c,
         escape = false;
-    
+
     for (var i = 0; i < format.length; ++i) {
       c = format.charAt(i);
-      
+
       if (escape) {
         r.push(tokens[c] || c);
         escape = false;
@@ -75,7 +75,7 @@ Flotr.Date = {
     // first check global format
     if (axis.options.timeFormat)
       return Flotr.Date.format(d, options.timeFormat, options.timeMode);
-    
+
     var span = (axis.max - axis.min) * scale,
         t = axis.tickSize * Flotr.Date.timeUnits[axis.tickUnit];
 
@@ -97,7 +97,7 @@ Flotr.Date = {
       ticks     = [],
       tickSize  = axis.tickSize,
       tickUnit,
-      formatter, i;
+      formatter, i, d;
 
     // Use custom formatter or time tick formatter
     formatter = (options.tickFormatter === Flotr.defaultTickFormatter ?
@@ -105,7 +105,7 @@ Flotr.Date = {
     );
 
     for (i = 0; i < spec.length - 1; ++i) {
-      var d = spec[i][0] * timeUnits[spec[i][1]];
+      d = spec[i][0] * timeUnits[spec[i][1]];
       if (delta < (d + spec[i+1][0] * timeUnits[spec[i+1][1]]) / 2 && d >= tickSize)
         break;
     }
@@ -143,7 +143,7 @@ Flotr.Date = {
       case "month": setTick('Month'); break;
       case "year": setTick('FullYear'); break;
     }
-    
+
     // reset smaller components
     if (step >= timeUnits.second)  set(d, 'Milliseconds', mode, 0);
     if (step >= timeUnits.minute)  set(d, 'Seconds', mode, 0);
@@ -193,9 +193,9 @@ Flotr.Date = {
   },
   // the allowed tick sizes, after 1 year we use an integer algorithm
   spec: [
-    [1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"], 
-    [1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"], 
-    [1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"], 
+    [1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"],
+    [1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"],
+    [1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"],
     [1, "hour"],     [2, "hour"],    [4, "hour"],   [8, "hour"],    [12, "hour"],
     [1, "day"],      [2, "day"],     [3, "day"],
     [0.25, "month"], [0.5, "month"], [1, "month"],  [2, "month"],   [3, "month"], [6, "month"],

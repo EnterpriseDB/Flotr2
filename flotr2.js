@@ -1880,7 +1880,7 @@ Flotr.Date = {
   format: function(d, format, mode) {
     if (!d) return;
 
-    // We should maybe use an "official" date format spec, like PHP date() or ColdFusion 
+    // We should maybe use an "official" date format spec, like PHP date() or ColdFusion
     // http://fr.php.net/manual/en/function.date.php
     // http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=functions_c-d_29.html
     var
@@ -1901,13 +1901,13 @@ Flotr.Date = {
       n += '';
       return n.length == 1 ? "0" + n : n;
     }
-    
+
     var r = [], c,
         escape = false;
-    
+
     for (var i = 0; i < format.length; ++i) {
       c = format.charAt(i);
-      
+
       if (escape) {
         r.push(tokens[c] || c);
         escape = false;
@@ -1937,7 +1937,7 @@ Flotr.Date = {
     // first check global format
     if (axis.options.timeFormat)
       return Flotr.Date.format(d, options.timeFormat, options.timeMode);
-    
+
     var span = (axis.max - axis.min) * scale,
         t = axis.tickSize * Flotr.Date.timeUnits[axis.tickUnit];
 
@@ -1959,7 +1959,7 @@ Flotr.Date = {
       ticks     = [],
       tickSize  = axis.tickSize,
       tickUnit,
-      formatter, i;
+      formatter, i, d;
 
     // Use custom formatter or time tick formatter
     formatter = (options.tickFormatter === Flotr.defaultTickFormatter ?
@@ -1967,7 +1967,7 @@ Flotr.Date = {
     );
 
     for (i = 0; i < spec.length - 1; ++i) {
-      var d = spec[i][0] * timeUnits[spec[i][1]];
+      d = spec[i][0] * timeUnits[spec[i][1]];
       if (delta < (d + spec[i+1][0] * timeUnits[spec[i+1][1]]) / 2 && d >= tickSize)
         break;
     }
@@ -2005,7 +2005,7 @@ Flotr.Date = {
       case "month": setTick('Month'); break;
       case "year": setTick('FullYear'); break;
     }
-    
+
     // reset smaller components
     if (step >= timeUnits.second)  set(d, 'Milliseconds', mode, 0);
     if (step >= timeUnits.minute)  set(d, 'Seconds', mode, 0);
@@ -2055,9 +2055,9 @@ Flotr.Date = {
   },
   // the allowed tick sizes, after 1 year we use an integer algorithm
   spec: [
-    [1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"], 
-    [1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"], 
-    [1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"], 
+    [1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"],
+    [1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"],
+    [1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"],
     [1, "hour"],     [2, "hour"],    [4, "hour"],   [8, "hour"],    [12, "hour"],
     [1, "day"],      [2, "day"],     [3, "day"],
     [0.25, "month"], [0.5, "month"], [1, "month"],  [2, "month"],   [3, "month"], [6, "month"],
@@ -3158,7 +3158,7 @@ Axis.prototype = {
 
     this.ticks = [];
     this.minorTicks = [];
-    
+
     // User Ticks
     if(options.ticks){
       this._cleanUserTicks(options.ticks, this.ticks);
@@ -3191,7 +3191,7 @@ Axis.prototype = {
       min     = o.min !== null ? o.min : axis.datamin,
       max     = o.max !== null ? o.max : axis.datamax,
       margin  = o.autoscaleMargin;
-        
+
     if (o.scaling == 'logarithmic') {
       if (min <= 0) min = axis.datamin;
 
@@ -3215,9 +3215,9 @@ Axis.prototype = {
       var minexp = Math.log(min);
       if (o.base != Math.E) minexp /= Math.log(o.base);
       minexp = Math.ceil(minexp);
-      
+
       axis.tickSize = Flotr.getTickSize(o.noTicks, minexp, maxexp, o.tickDecimals === null ? 0 : o.tickDecimals);
-                        
+
       // Try to determine a suitable amount of miniticks based on the length of a decade
       if (o.minorTickFreq === null) {
         if (maxexp - minexp > 10)
@@ -3241,10 +3241,10 @@ Axis.prototype = {
       if(axis.min < 0 && axis.datamin >= 0) axis.min = 0;
       axis.min = axis.tickSize * Math.floor(axis.min / axis.tickSize);
     }
-    
+
     if(o.max === null && o.autoscale){
       axis.max += axis.tickSize * margin;
-      if(axis.max > 0 && axis.datamax <= 0 && axis.datamax != axis.datamin) axis.max = 0;        
+      if(axis.max > 0 && axis.datamax <= 0 && axis.datamax != axis.datamin) axis.max = 0;
       axis.max = axis.tickSize * Math.ceil(axis.max / axis.tickSize);
     }
 
@@ -3274,7 +3274,7 @@ Axis.prototype = {
     );
 
     this.titleSize = T.dimensions(
-      this.options.title, 
+      this.options.title,
       {size:options.fontSize*1.2, angle: Flotr.toRad(this.options.titleAngle)},
       'font-weight:bold;',
       'flotr-axis-title'
@@ -3319,18 +3319,18 @@ Axis.prototype = {
     var min = Math.log(axis.min);
     if (o.base != Math.E) min /= Math.log(o.base);
     min = Math.ceil(min);
-    
+
     for (i = min; i < max; i += axis.tickSize) {
       decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
       // Next decade begins here:
       var decadeEnd = decadeStart * ((o.base == Math.E) ? Math.exp(axis.tickSize) : Math.pow(o.base, axis.tickSize));
       var stepSize = (decadeEnd - decadeStart) / o.minorTickFreq;
-      
+
       axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
       for (v = decadeStart + stepSize; v < decadeEnd; v += stepSize)
         axis.minorTicks.push({v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max})});
     }
-    
+
     // Always show the value at the would-be start of next decade (end of this decade)
     decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
     axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
@@ -3348,18 +3348,18 @@ Axis.prototype = {
         minorTickSize,
         v, v2,
         i, j;
-    
+
     if (o.minorTickFreq)
       minorTickSize = tickSize / o.minorTickFreq;
-                      
+
     // Then store all possible ticks.
     for (i = 0; (v = v2 = start + i * tickSize) <= max; ++i){
-      
+
       // Round (this is always needed to fix numerical instability).
       decimals = o.tickDecimals;
       if (decimals === null) decimals = 1 - Math.floor(Math.log(tickSize) / Math.LN10);
       if (decimals < 0) decimals = 0;
-      
+
       v = v.toFixed(decimals);
       axis.ticks.push({ v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max}) });
 
@@ -3393,7 +3393,7 @@ _.extend(Axis, {
 
 function log (value, base) {
   value = Math.log(Math.max(value, Number.MIN_VALUE));
-  if (base !== Math.E) 
+  if (base !== Math.E)
     value /= Math.log(base);
   return value;
 }
@@ -5421,13 +5421,18 @@ Flotr.addPlugin('download', {
       D.insert(this.el, image);
       this.saveImageElement = image;
     } else {
-      var u = navigator.userAgent, isIE = (Flotr.isIE || (new RegExp(/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i)).test(u) || (new RegExp(/(edge)\/((\d+)?[\w\.]+)/i)).test(u));
+      var u = navigator.userAgent, isIE = (Flotr.isIE || (new RegExp(/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i)).test(u) || (new RegExp(/(edge)\/((\d+)?[\w\.]+)/i)).test(u)),
+        win;
 
       if (isIE) {
-            return window.open('about:blank').document.body.innerHTML = '<img src="' + image.src+ '">';
+        win = window.open('about:blank');
+        if (win) {
+          win.document.body.innerHTML = '<img src="' + image.src+ '">';
+          return;
         }
+      }
 
-      var win = window.open('about:blank');
+      win = window.open('about:blank');
       setTimeout(function() {
           var script =
           'document.body.innerHTML = \'If download is not started please click ' +
@@ -5439,7 +5444,6 @@ Flotr.addPlugin('download', {
 
           win.eval(script);
         }, 200);
-      return;
     }
   },
 
@@ -6585,7 +6589,8 @@ Flotr.addPlugin('legend', {
     position: 'nw',        // => position of default legend container within plot
     margin: 5,             // => distance from grid edge to default legend container within plot
     backgroundColor: '#F0F0F0', // => Legend background color.
-    backgroundOpacity: 0.85// => set to 0 to avoid background, set to 1 for a solid background
+    backgroundOpacity: 0.85, // => set to 0 to avoid background, set to 1 for a solid background
+    onLegendClick: null,
   },
   callbacks: {
     'flotr:afterinit': function() {
@@ -6612,13 +6617,14 @@ Flotr.addPlugin('legend', {
       options       = this.options,
       legend        = options.legend,
       fragments     = [],
-      rowStarted    = false, 
+      rowStarted    = false,
       ctx           = this.ctx,
-      itemCount     = _.filter(series, function(s) {return (s.label && !s.hide);}).length,
-      p             = legend.position, 
+      itemCount     = series.length,
+      p             = legend.position,
       m             = legend.margin,
       opacity       = legend.backgroundOpacity,
-      i, label, color;
+      i, label, color,
+      graph         = this;
 
     if (itemCount) {
 
@@ -6635,7 +6641,6 @@ Flotr.addPlugin('legend', {
 
       // We calculate the labels' max width
       for(i = series.length - 1; i > -1; --i){
-        if(!series[i].label || series[i].hide) continue;
         label = legend.labelFormatter(series[i].label);
         labelMaxWidth = Math.max(labelMaxWidth, this._text.measureText(label, style).width);
       }
@@ -6649,11 +6654,11 @@ Flotr.addPlugin('legend', {
       }
 
       if (!options.HtmlText && this.textEnabled && !legend.container) {
-        
+
         if(p.charAt(0) == 's') offsetY = plotOffset.top + this.plotHeight - (m + legendHeight);
         if(p.charAt(0) == 'c') offsetY = plotOffset.top + (this.plotHeight/2) - (m + (legendHeight/2));
         if(p.charAt(1) == 'e') offsetX = plotOffset.left + this.plotWidth - (m + legendWidth);
-        
+
         // Legend box
         color = this.processColor(legend.backgroundColor, { opacity : opacity });
 
@@ -6661,78 +6666,113 @@ Flotr.addPlugin('legend', {
         ctx.fillRect(offsetX, offsetY, legendWidth, legendHeight);
         ctx.strokeStyle = legend.labelBoxBorderColor;
         ctx.strokeRect(Flotr.toPixel(offsetX), Flotr.toPixel(offsetY), legendWidth, legendHeight);
-        
+
         // Legend labels
         var x = offsetX + lbm;
         var y = offsetY + lbm;
         for(i = 0; i < series.length; i++){
-          if(!series[i].label || series[i].hide) continue;
           label = legend.labelFormatter(series[i].label);
-          
+
           ctx.fillStyle = series[i].color;
           ctx.fillRect(x, y, lbw-1, lbh-1);
-          
+
           ctx.strokeStyle = legend.labelBoxBorderColor;
           ctx.lineWidth = 1;
           ctx.strokeRect(Math.ceil(x)-1.5, Math.ceil(y)-1.5, lbw+2, lbh+2);
-          
+
           // Legend text
           Flotr.drawText(ctx, label, x + lbw + lbm, y + lbh, style);
-          
+
           y += lbh + lbm;
         }
-      }
-      else {
-        for(i = 0; i < series.length; ++i){
-          if(!series[i].label || series[i].hide) continue;
-          
-          if(i % legend.noColumns === 0){
-            fragments.push(rowStarted ? '</tr><tr>' : '<tr>');
-            rowStarted = true;
-          }
+      } else {
+        var legendClicked = function() {
+          var me = this;
+          setTimeout(function() {
+            me.callback(me.series, me.idx);
+          }, 1);
+        };
+
+        if (!_.isFunction(legend.onLegendClick)) {
+          legend.onLegendClick = null;
+        }
+
+        for(i = 0; i < series.length; ++i) {
+
+          var trEl = document.createElement('tr');
+
+          fragments.push(trEl);
 
           var s = series[i],
             boxWidth = legend.labelBoxWidth,
             boxHeight = legend.labelBoxHeight;
 
           label = legend.labelFormatter(s.label);
-          color = 'background-color:' + ((s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ? s.bars.fillColor : s.color) + ';';
-          
-          fragments.push(
-            '<td class="flotr-legend-color-box">',
-              '<div style="border:1px solid ', legend.labelBoxBorderColor, ';padding:1px">',
-                '<div style="width:', (boxWidth-1), 'px;height:', (boxHeight-1), 'px;border:1px solid ', series[i].color, '">', // Border
-                  '<div style="width:', boxWidth, 'px;height:', boxHeight, 'px;', color, '"></div>', // Background
-                '</div>',
-              '</div>',
-            '</td>',
-            '<td class="flotr-legend-label">', label, '</td>'
+          color = (
+            (s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ?
+            s.bars.fillColor : s.color
           );
+
+          if (legend.onLegendClick !== null) {
+            trEl.classList.add('clickable');
+            trEl.onclick = legendClicked.bind({
+              idx: i,
+              series: series[i],
+              callback: legend.onLegendClick,
+            });
+          }
+          if (s.hide === true) {
+            color = 'transparent';
+          }
+
+          trEl.innerHTML = [
+            '<td class="flotr-legend-color-box">',
+            ' <div style="border: 1px solid ', legend.labelBoxBorderColor, '">',
+            '  <div style="width:', (boxWidth - 1), 'px;',
+            '   height: ', (boxHeight - 1), 'px;',
+            '   border: 1px solid ', series[i].color, '">', // Border
+            '   <div class="flotr-legend-color-bg" style="',
+            '    width:', boxWidth, 'px; height:', boxHeight, 'px;',
+            '    background-color:', color, ';"> </div>', // Background
+            '  </div>',
+            ' </div>',
+            '</td>',
+            '<td class="flotr-legend-label">', label, '</td>',
+          ].join('');
         }
-        if(rowStarted) fragments.push('</tr>');
-          
-        if(fragments.length > 0){
-          var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join('') + '</table>';
-          if(legend.container){
-            table = D.node(table);
+
+        if(fragments.length > 0) {
+          var table,
+            tblStyle = [
+              'font-size: smaller',
+              'color:' + options.grid.color,
+            ].join(';');
+
+          if(legend.container) {
+            table = document.createElement('table');
+            table.style = tblStyle;
             this.legend.markup = table;
             D.insert(legend.container, table);
-          }
-          else {
-            var styles = {position: 'absolute', 'zIndex': '2', 'border' : '1px solid ' + legend.labelBoxBorderColor};
+          } else {
+            table = '<table style=" + tblStyle + "></table>';
+            var styles = {
+              position: 'absolute', 'zIndex': '2',
+              'border' : '1px solid ' + legend.labelBoxBorderColor
+            };
 
-                 if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
+            if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
             else if(p.charAt(0) == 'c') { styles.top = (m + (this.plotHeight - legendHeight) / 2) + 'px'; styles.bottom = 'auto'; }
             else if(p.charAt(0) == 's') { styles.bottom = (m + plotOffset.bottom) + 'px'; styles.top = 'auto'; }
-                 if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
+            if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
             else if(p.charAt(1) == 'w') { styles.left = (m + plotOffset.left) + 'px'; styles.right = 'auto'; }
 
             var div = D.create('div'), size;
             div.className = 'flotr-legend';
             D.setStyles(div, styles);
+            table = D.node(table);
             D.insert(div, table);
             D.insert(this.el, div);
-            
+
             if (!opacity) return;
 
             var c = legend.backgroundColor || options.grid.backgroundColor || '#ffffff';
@@ -6752,6 +6792,10 @@ Flotr.addPlugin('legend', {
             D.opacity(div, opacity);
             D.insert(div, ' ');
             D.insert(this.el, div);
+          }
+
+          for(i = 0; i < fragments.length; i++) {
+            table.appendChild(fragments[i]);
           }
         }
       }

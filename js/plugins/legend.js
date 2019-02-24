@@ -17,7 +17,8 @@ Flotr.addPlugin('legend', {
     position: 'nw',        // => position of default legend container within plot
     margin: 5,             // => distance from grid edge to default legend container within plot
     backgroundColor: '#F0F0F0', // => Legend background color.
-    backgroundOpacity: 0.85// => set to 0 to avoid background, set to 1 for a solid background
+    backgroundOpacity: 0.85, // => set to 0 to avoid background, set to 1 for a solid background
+    onLegendClick: null,
   },
   callbacks: {
     'flotr:afterinit': function() {
@@ -44,13 +45,14 @@ Flotr.addPlugin('legend', {
       options       = this.options,
       legend        = options.legend,
       fragments     = [],
-      rowStarted    = false, 
+      rowStarted    = false,
       ctx           = this.ctx,
-      itemCount     = _.filter(series, function(s) {return (s.label && !s.hide);}).length,
-      p             = legend.position, 
+      itemCount     = series.length,
+      p             = legend.position,
       m             = legend.margin,
       opacity       = legend.backgroundOpacity,
-      i, label, color;
+      i, label, color,
+      graph         = this;
 
     if (itemCount) {
 
@@ -67,7 +69,6 @@ Flotr.addPlugin('legend', {
 
       // We calculate the labels' max width
       for(i = series.length - 1; i > -1; --i){
-        if(!series[i].label || series[i].hide) continue;
         label = legend.labelFormatter(series[i].label);
         labelMaxWidth = Math.max(labelMaxWidth, this._text.measureText(label, style).width);
       }
@@ -81,11 +82,11 @@ Flotr.addPlugin('legend', {
       }
 
       if (!options.HtmlText && this.textEnabled && !legend.container) {
-        
+
         if(p.charAt(0) == 's') offsetY = plotOffset.top + this.plotHeight - (m + legendHeight);
         if(p.charAt(0) == 'c') offsetY = plotOffset.top + (this.plotHeight/2) - (m + (legendHeight/2));
         if(p.charAt(1) == 'e') offsetX = plotOffset.left + this.plotWidth - (m + legendWidth);
-        
+
         // Legend box
         color = this.processColor(legend.backgroundColor, { opacity : opacity });
 
@@ -93,78 +94,113 @@ Flotr.addPlugin('legend', {
         ctx.fillRect(offsetX, offsetY, legendWidth, legendHeight);
         ctx.strokeStyle = legend.labelBoxBorderColor;
         ctx.strokeRect(Flotr.toPixel(offsetX), Flotr.toPixel(offsetY), legendWidth, legendHeight);
-        
+
         // Legend labels
         var x = offsetX + lbm;
         var y = offsetY + lbm;
         for(i = 0; i < series.length; i++){
-          if(!series[i].label || series[i].hide) continue;
           label = legend.labelFormatter(series[i].label);
-          
+
           ctx.fillStyle = series[i].color;
           ctx.fillRect(x, y, lbw-1, lbh-1);
-          
+
           ctx.strokeStyle = legend.labelBoxBorderColor;
           ctx.lineWidth = 1;
           ctx.strokeRect(Math.ceil(x)-1.5, Math.ceil(y)-1.5, lbw+2, lbh+2);
-          
+
           // Legend text
           Flotr.drawText(ctx, label, x + lbw + lbm, y + lbh, style);
-          
+
           y += lbh + lbm;
         }
-      }
-      else {
-        for(i = 0; i < series.length; ++i){
-          if(!series[i].label || series[i].hide) continue;
-          
-          if(i % legend.noColumns === 0){
-            fragments.push(rowStarted ? '</tr><tr>' : '<tr>');
-            rowStarted = true;
-          }
+      } else {
+        var legendClicked = function() {
+          var me = this;
+          setTimeout(function() {
+            me.callback(me.series, me.idx);
+          }, 1);
+        };
+
+        if (!_.isFunction(legend.onLegendClick)) {
+          legend.onLegendClick = null;
+        }
+
+        for(i = 0; i < series.length; ++i) {
+
+          var trEl = document.createElement('tr');
+
+          fragments.push(trEl);
 
           var s = series[i],
             boxWidth = legend.labelBoxWidth,
             boxHeight = legend.labelBoxHeight;
 
           label = legend.labelFormatter(s.label);
-          color = 'background-color:' + ((s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ? s.bars.fillColor : s.color) + ';';
-          
-          fragments.push(
-            '<td class="flotr-legend-color-box">',
-              '<div style="border:1px solid ', legend.labelBoxBorderColor, ';padding:1px">',
-                '<div style="width:', (boxWidth-1), 'px;height:', (boxHeight-1), 'px;border:1px solid ', series[i].color, '">', // Border
-                  '<div style="width:', boxWidth, 'px;height:', boxHeight, 'px;', color, '"></div>', // Background
-                '</div>',
-              '</div>',
-            '</td>',
-            '<td class="flotr-legend-label">', label, '</td>'
+          color = (
+            (s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ?
+            s.bars.fillColor : s.color
           );
+
+          if (legend.onLegendClick !== null) {
+            trEl.classList.add('clickable');
+            trEl.onclick = legendClicked.bind({
+              idx: i,
+              series: series[i],
+              callback: legend.onLegendClick,
+            });
+          }
+          if (s.hide === true) {
+            color = 'transparent';
+          }
+
+          trEl.innerHTML = [
+            '<td class="flotr-legend-color-box">',
+            ' <div style="border: 1px solid ', legend.labelBoxBorderColor, '">',
+            '  <div style="width:', (boxWidth - 1), 'px;',
+            '   height: ', (boxHeight - 1), 'px;',
+            '   border: 1px solid ', series[i].color, '">', // Border
+            '   <div class="flotr-legend-color-bg" style="',
+            '    width:', boxWidth, 'px; height:', boxHeight, 'px;',
+            '    background-color:', color, ';"> </div>', // Background
+            '  </div>',
+            ' </div>',
+            '</td>',
+            '<td class="flotr-legend-label">', label, '</td>',
+          ].join('');
         }
-        if(rowStarted) fragments.push('</tr>');
-          
-        if(fragments.length > 0){
-          var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join('') + '</table>';
-          if(legend.container){
-            table = D.node(table);
+
+        if(fragments.length > 0) {
+          var table,
+            tblStyle = [
+              'font-size: smaller',
+              'color:' + options.grid.color,
+            ].join(';');
+
+          if(legend.container) {
+            table = document.createElement('table');
+            table.style = tblStyle;
             this.legend.markup = table;
             D.insert(legend.container, table);
-          }
-          else {
-            var styles = {position: 'absolute', 'zIndex': '2', 'border' : '1px solid ' + legend.labelBoxBorderColor};
+          } else {
+            table = '<table style=" + tblStyle + "></table>';
+            var styles = {
+              position: 'absolute', 'zIndex': '2',
+              'border' : '1px solid ' + legend.labelBoxBorderColor
+            };
 
-                 if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
+            if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
             else if(p.charAt(0) == 'c') { styles.top = (m + (this.plotHeight - legendHeight) / 2) + 'px'; styles.bottom = 'auto'; }
             else if(p.charAt(0) == 's') { styles.bottom = (m + plotOffset.bottom) + 'px'; styles.top = 'auto'; }
-                 if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
+            if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
             else if(p.charAt(1) == 'w') { styles.left = (m + plotOffset.left) + 'px'; styles.right = 'auto'; }
 
             var div = D.create('div'), size;
             div.className = 'flotr-legend';
             D.setStyles(div, styles);
+            table = D.node(table);
             D.insert(div, table);
             D.insert(this.el, div);
-            
+
             if (!opacity) return;
 
             var c = legend.backgroundColor || options.grid.backgroundColor || '#ffffff';
@@ -184,6 +220,10 @@ Flotr.addPlugin('legend', {
             D.opacity(div, opacity);
             D.insert(div, ' ');
             D.insert(this.el, div);
+          }
+
+          for(i = 0; i < fragments.length; i++) {
+            table.appendChild(fragments[i]);
           }
         }
       }

@@ -53,13 +53,18 @@ Flotr.addPlugin('download', {
       D.insert(this.el, image);
       this.saveImageElement = image;
     } else {
-      var u = navigator.userAgent, isIE = (Flotr.isIE || (new RegExp(/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i)).test(u) || (new RegExp(/(edge)\/((\d+)?[\w\.]+)/i)).test(u));
+      var u = navigator.userAgent, isIE = (Flotr.isIE || (new RegExp(/(trident).+rv[:\s]([\w\.]+).+like\sgecko/i)).test(u) || (new RegExp(/(edge)\/((\d+)?[\w\.]+)/i)).test(u)),
+        win;
 
       if (isIE) {
-            return window.open('about:blank').document.body.innerHTML = '<img src="' + image.src+ '">';
+        win = window.open('about:blank');
+        if (win) {
+          win.document.body.innerHTML = '<img src="' + image.src+ '">';
+          return;
         }
+      }
 
-      var win = window.open('about:blank');
+      win = window.open('about:blank');
       setTimeout(function() {
           var script =
           'document.body.innerHTML = \'If download is not started please click ' +
@@ -71,7 +76,6 @@ Flotr.addPlugin('download', {
 
           win.eval(script);
         }, 200);
-      return;
     }
   },
 
