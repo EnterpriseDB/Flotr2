@@ -5427,7 +5427,7 @@ Flotr.addPlugin('legend', {
             this.legend.markup = table;
             D.insert(legend.container, table);
           } else {
-            table = '<table style=" + tblStyle + "></table>';
+            table = '<table style="' + tblStyle + '"></table>';
             var styles = {
               position: 'absolute', 'zIndex': '2',
               'border' : '1px solid ' + legend.labelBoxBorderColor
@@ -5450,21 +5450,24 @@ Flotr.addPlugin('legend', {
 
             var c = legend.backgroundColor || options.grid.backgroundColor || '#ffffff';
 
-            _.extend(styles, D.size(div), {
+            _.extend(styles, {
               'backgroundColor': c,
               'zIndex' : '',
-              'border' : ''
+              'border' : '',
+              'top': 0,
+              'bottom': 0,
+              'right': 0,
+              'left': 0,
             });
-            styles.width += 'px';
-            styles.height += 'px';
 
-             // Put in the transparent background separately to avoid blended labels and
-            div = D.create('div');
-            div.className = 'flotr-legend-bg';
-            D.setStyles(div, styles);
-            D.opacity(div, opacity);
-            D.insert(div, ' ');
-            D.insert(this.el, div);
+            // Put in the transparent background separately to avoid blended
+            // labels and colors.
+            var legend_bg = D.create('div');
+            legend_bg.className = 'flotr-legend-bg';
+            D.setStyles(legend_bg, styles);
+            D.opacity(legend_bg, 0.25 * opacity);
+            div.firstChild ? div.insertBefore(legend_bg, div.firstChild) :
+              div.appendChild(legend_bg);
           }
 
           for(i = 0; i < fragments.length; i++) {
