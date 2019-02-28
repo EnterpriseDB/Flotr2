@@ -5954,9 +5954,9 @@ Flotr.addPlugin('hit', {
   drawMouseTrack : function (n) {
 
     var
-      pos         = '', 
+      pos         = '',
       s           = n.series,
-      p           = n.mouse.position, 
+      p           = n.mouse.position,
       m           = n.mouse.margin,
       x           = n.x,
       y           = n.y,
@@ -6020,7 +6020,6 @@ Flotr.addPlugin('hit', {
       if      (p.charAt(1) == 'e') pos += (oLeft - m + left + this.plotWidth - size.width);
       else if (p.charAt(1) == 'w') pos += (oLeft + m + left);
       pos += 'px;right:auto;';
-
     // Pie
     } else if (s.pie && s.pie.show) {
       var center = {
@@ -6029,19 +6028,37 @@ Flotr.addPlugin('hit', {
         },
         radius = (Math.min(this.canvasWidth, this.canvasHeight) * s.pie.sizeRatio) / 2,
         bisection = n.sAngle<n.eAngle ? (n.sAngle + n.eAngle) / 2: (n.sAngle + n.eAngle + 2* Math.PI) / 2;
-      
+
       pos += 'bottom:' + (m - top - center.y - Math.sin(bisection) * radius/2 + this.canvasHeight) + 'px;top:auto;';
       pos += 'left:' + (m + left + center.x + Math.cos(bisection) * radius/2) + 'px;right:auto;';
 
     // Default
     } else {
+      var topPos = -1, leftPos = -1;
       pos += 'top:';
-      if (/n/.test(p)) pos += (oTop - m + top + n.yaxis.d2p(n.y) - size.height);
-      else             pos += (oTop + m + top + n.yaxis.d2p(n.y));
-      pos += 'px;bottom:auto;left:';
-      if (/w/.test(p)) pos += (oLeft - m + left + n.xaxis.d2p(n.x) - size.width);
-      else             pos += (oLeft + m + left + n.xaxis.d2p(n.x));
-      pos += 'px;right:auto;';
+      if (/n/.test(p))
+        topPos = (oTop - m + top + n.yaxis.d2p(n.y) - size.height);
+
+
+      if (topPos < 0) {
+        topPos = (oTop + m + top + n.yaxis.d2p(n.y));
+
+        if (topPos < 0)
+          topPos = (oTop - m + top + n.yaxis.d2p(n.y) - size.height);
+      }
+
+      pos += topPos + 'px;bottom:auto;left:';
+
+      if (/w/.test(p))
+        leftPos = (oLeft - m + left + n.xaxis.d2p(n.x) - size.width);
+
+      if (leftPos < 0)
+        leftPos = (oLeft + m + left + n.xaxis.d2p(n.x));
+
+      if (leftPos < 0)
+        leftPos = (oLeft - m + left + n.xaxis.d2p(n.x) - size.width);
+
+      pos += leftPos + 'px;right:auto;';
     }
 
     // Set position
