@@ -4384,20 +4384,26 @@ Flotr.addPlugin('hit', {
   executeOnType: function(s, method, args){
     var
       success = false,
-      options;
+      options,
+      hidden = 0;
 
     if (!_.isArray(s)) s = [s];
 
     function e(s, index) {
+      if (s.hide) {
+        hidden++;
+        return;
+      }
+
       _.each(_.keys(flotr.graphTypes), function (type) {
-        if (s[type] && s[type].show && !s.hide && this[type][method]) {
+        if (s[type] && s[type].show && this[type][method]) {
           options = this.getOptions(s, type);
 
           options.fill = !!s.mouse.fillColor;
           options.fillStyle = this.processColor(s.mouse.fillColor || '#ffffff', {opacity: s.mouse.fillOpacity});
           options.color = s.mouse.lineColor;
           options.context = this.octx;
-          options.index = index;
+          options.index = index - hidden;
 
           if (args) options.args = args;
           this[type][method].call(this[type], options);
