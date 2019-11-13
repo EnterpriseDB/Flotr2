@@ -43,3 +43,4 @@ flotr-amd: flotr2
 	cat js/amd/pre.js > flotr2.amd.js
 	cat build/flotr2.js >> flotr2.amd.js
 	cat js/amd/post.js >> flotr2.amd.js
+	cat js/amd/pre.min.js build/flotr2.min.js js/amd/post.min.js > flotr2.amd.min.js
